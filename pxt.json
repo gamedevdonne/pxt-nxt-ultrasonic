@@ -1,0 +1,14 @@
+{
+    "name": "nxt-ultrasonic",
+    "version": "0.0.1",
+    "description": "NXT Ultrasonic Sensor support for EV3",
+    "files": [
+        "main.ts"
+    ],
+    "dependencies": {
+        "core": "*"
+    },
+    "targetVersions": {
+        "target": "0.0.0"
+    }
+}
