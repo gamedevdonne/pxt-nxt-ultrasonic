@@ -1,2 +1,57 @@
-# pxt-nxt-ultrasonic
-A custom Microsoft MakeCode extension for LEGO MINDSTORMS EV3 to read legacy digital NXT Ultrasonic Sensors via the ev3dev driver system.
+# MakeCode Extension for LEGO MINDSTORMS NXT Ultrasonic Sensor
+
+This custom extension adds support for the legacy **LEGO MINDSTORMS NXT Ultrasonic Sensor (9797/9846)** when using a LEGO MINDSTORMS EV3 brick programmed with Microsoft MakeCode.
+
+While MakeCode for EV3 natively supports EV3 digital sensors, it lacks built-in blocks for legacy NXT devices. This extension bridges that gap by directly interfacing with the underlying `ev3dev` Linux kernel drivers to initialize and read the NXT Ultrasonic sensor over I2C.
+
+## Features
+
+* Adds a new **NXT Sensors** block category.
+* Directly reads live distance data in centimeters (cm).
+* Automatically resolves dynamic `ev3dev` device mapping based on physical port placement.
+* Fallback handling returns `255` (out of range/disconnected) if no NXT Ultrasonic sensor is detected.
+
+## Supported Sensor
+* **LEGO MINDSTORMS NXT Ultrasonic Sensor** (`lego-nxt-us`)
+
+## Setup & Installation
+
+To use this extension in your MakeCode project, follow these steps:
+
+1. Open the [Microsoft MakeCode for EV3](https://mindstorms.com) editor.
+2. Create a new project or open an existing one.
+3. Click on the **Advanced** tab in the block toolbox, scroll down, and click **Extensions**.
+4. Paste the URL of this GitHub repository into the search bar:
+   `https://github.com`
+5. Click on the extension card to add it to your project toolbox.
+
+## Block Usage
+
+Once imported, a green **NXT Sensors** drawer will appear. 
+
+### Read Distance
+```blocks
+nxtSensors.nxtUltrasonicDistance(SensorPort.In4)
+```
+This block reads the current distance in centimeters from a sensor plugged into any of the input ports (1–4). It returns a number between `0` and `255`.
+
+### Example Program
+```blocks
+forever(function () {
+    let distance = nxtSensors.nxtUltrasonicDistance(SensorPort.In4)
+    if (distance < 20) {
+        brick.setStatusLight(StatusLight.RedFlash)
+    } else {
+        brick.setStatusLight(StatusLight.Green)
+    }
+    pause(100)
+})
+```
+
+## Technical Notes
+
+* **I2C Protocol:** The NXT Ultrasonic sensor is a digital device running on a 9V I2C bus. The EV3 hardware handles the physical layer natively, while this extension communicates through the file system at `/sys/class/lego-sensor/`.
+* **Latency:** Reading from the Linux driver files introduces minor latency compared to standard native EV3 blocks. It is recommended to include a short `pause` (e.g., 50–100ms) inside loops to avoid CPU overhead.
+
+## License
+MIT
